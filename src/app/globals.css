@@ -1,26 +1,124 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .text-gradient {
+    background: linear-gradient(to right, #E85D04, #DC2F02);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .btn-primary {
+    @apply bg-[#E85D04] hover:bg-[#DC2F02] text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 inline-flex items-center gap-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-lg border border-white/20 transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
+  }
+  
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .section-padding {
+    @apply py-20 md:py-32 px-4 md:px-8;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1A1A1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E85D04;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #DC2F02;
+}
+
+/* Stopmotion grain effect */
+.stopmotion-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  animation: grain 0.5s steps(3) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+
+/* Smooth scrollbar for entire page */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #E85D04 #1A1A1A;
+}
+
+/* Stopmotion Video Animation */
+.stopmotion-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.stopmotion-frame {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: stopmotion 2s steps(1) infinite;
+}
+
+.stopmotion-frame:nth-child(1) { animation-delay: 0s; }
+.stopmotion-frame:nth-child(2) { animation-delay: 0.2s; }
+.stopmotion-frame:nth-child(3) { animation-delay: 0.4s; }
+.stopmotion-frame:nth-child(4) { animation-delay: 0.6s; }
+.stopmotion-frame:nth-child(5) { animation-delay: 0.8s; }
+.stopmotion-frame:nth-child(6) { animation-delay: 1.0s; }
+.stopmotion-frame:nth-child(7) { animation-delay: 1.2s; }
+.stopmotion-frame:nth-child(8) { animation-delay: 1.4s; }
+.stopmotion-frame:nth-child(9) { animation-delay: 1.6s; }
+.stopmotion-frame:nth-child(10) { animation-delay: 1.8s; }
+
+@keyframes stopmotion {
+  0% { opacity: 1; }
+  9.99% { opacity: 1; }
+  10% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Ken Burns zoom for hero */
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1.15) translateY(-2%);
+  }
+}
+
+.ken-burns {
+  animation: kenburns 20s ease-in-out infinite alternate;
 }

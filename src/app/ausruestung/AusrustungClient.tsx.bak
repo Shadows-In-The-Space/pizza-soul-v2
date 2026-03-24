@@ -1,0 +1,257 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, Flame, Star as StarIcon, Check, ExternalLink, Thermometer, Clock, Award } from "lucide-react";
+
+const ovens = [
+  {
+    id: "ooni-koda-12",
+    name: "Ooni Koda 12",
+    tagline: "Der Bestseller",
+    emoji: "🔥",
+    gradient: "from-[#E85D04] to-[#DC2F02]",
+    category: "tragbar",
+    price: "€299",
+    oldPrice: "€349",
+    rating: 4.8,
+    reviews: 2847,
+    provision: "~8%",
+    image: "/images/ooni-koda.png",
+    tags: ["Gas", " tragbar", "12 Zoll"],
+    temperature: "500°C",
+    heatUp: "20 min",
+    pros: ["Kompakt & tragbar", "Erreicht 500°C", "In 20 min einsatzbereit", "Gasbetrieb"],
+    cons: ["Nur 12 Zoll Pizzen", "Kein Holzfeuer-Aroma"],
+    amazonUrl: "https://www.amazon.de/dp/B07RF1XVL8?tag=pizzasoul-21",
+    prime: true,
+    bestseller: true,
+  },
+  {
+    id: "ooni-pizza-ofen-fyra",
+    name: "Ooni Fyra 12",
+    tagline: "Holzfeuer-Feeling",
+    emoji: "🪵",
+    gradient: "from-[#DC2F02] to-[#9D0208]",
+    category: "tragbar",
+    price: "€379",
+    oldPrice: "€429",
+    rating: 4.7,
+    reviews: 1523,
+    provision: "~8%",
+    image: "/images/ooni-fyra.png",
+    tags: ["Holzpellets", " tragbar", "12 Zoll"],
+    temperature: "500°C",
+    heatUp: "15 min",
+    pros: ["Authentisches Holzfeuer-Aroma", "Nachhaltige Pellets", "Extrem kompakt"],
+    cons: ["Raucharme Zone beachten", "Pellets nachkaufen"],
+    amazonUrl: "https://www.amazon.de/dp/B09C4Y1J1K?tag=pizzasoul-21",
+    prime: true,
+    bestseller: false,
+  },
+  {
+    id: "gozney-rocbox",
+    name: "Gozney Roccbox",
+    tagline: "Profi-Qualität",
+    emoji: "🏆",
+    gradient: "from-[#E85D04] to-[#F4A024]",
+    category: "tragbar",
+    price: "€499",
+    oldPrice: "€599",
+    rating: 4.9,
+    reviews: 892,
+    provision: "~10%",
+    image: "/images/roccbox.png",
+    tags: ["Gas + Holz", " tragbar", "12 Zoll"],
+    temperature: "500°C",
+    heatUp: "25 min",
+    pros: ["Dual-Fuel (Gas + Holz)", "Profi-Materialien", "Abnehmbarer Boden"],
+    cons: ["Höherer Preis", "Schwerer als Ooni"],
+    amazonUrl: "https://www.amazon.de/dp/B08C4X1VXL?tag=pizzasoul-21",
+    prime: true,
+    bestseller: false,
+  },
+  {
+    id: "klarstein-pizzaofen",
+    name: "Klarstein Forza Nero",
+    tagline: "Stationärer Allrounder",
+    emoji: "🏠",
+    gradient: "from-[#370617] to-[#6A040F]",
+    category: "stationär",
+    price: "€449",
+    oldPrice: "€549",
+    rating: 4.6,
+    reviews: 634,
+    provision: "~10%",
+    image: "/images/forza-nero.png",
+    tags: ["Holz", " stationär", "14 Zoll"],
+    temperature: "450°C",
+    heatUp: "30 min",
+    pros: ["14 Zoll Pizza möglich", "Echter Holzfeuer-Geschmack", "Stabile Konstruktion"],
+    cons: ["Braucht Platz im Garten", "Aufbau erforderlich"],
+    amazonUrl: "https://www.amazon.de/dp/B07YXQGVS5?tag=pizzasoul-21",
+    prime: false,
+    bestseller: false,
+  },
+  {
+    id: "cucina-torino",
+    name: "Cucina Torino PRO",
+    tagline: "Made in Italy",
+    emoji: "🇮🇹",
+    gradient: "from-[#22C55E] to-[#16A34A]",
+    category: "stationär",
+    price: "€899",
+    oldPrice: "€1.099",
+    rating: 4.9,
+    reviews: 312,
+    provision: "~8%",
+    image: "/images/cucina-torino.png",
+    tags: ["Holz", " stationär", "Profi"],
+    temperature: "500°C",
+    heatUp: "45 min",
+    pros: ["Handgefertigt in Italien", "500°C+ erreichbar", "Premium Materialien"],
+    cons: ["Hoher Preis", "Lange Aufwärmzeit"],
+    amazonUrl: "https://www.amazon.de/dp/B09V3XJZ8L?tag=pizzasoul-21",
+    prime: false,
+    bestseller: false,
+  },
+  {
+    id: "ooni-koda-16",
+    name: "Ooni Koda 16",
+    tagline: "Für große Pizzen",
+    emoji: "🍕",
+    gradient: "from-[#F4A024] to-[#FFBA08]",
+    category: "tragbar",
+    price: "€449",
+    oldPrice: "€499",
+    rating: 4.7,
+    reviews: 1823,
+    provision: "~8%",
+    image: "/images/ooni-koda-16.png",
+    tags: ["Gas", " tragbar", "16 Zoll"],
+    temperature: "500°C",
+    heatUp: "20 min",
+    pros: ["16 Zoll Pizzen möglich", "Genug für 4-6 Personen", "Schnell einsatzbereit"],
+    cons: ["Größer & schwerer", "Teurer als Koda 12"],
+    amazonUrl: "https://www.amazon.de/dp/B08G9WYQHT?tag=pizzasoul-21",
+    prime: true,
+    bestseller: true,
+  },
+];
+
+const accessories = [
+  { name: "Pizzaschieber", price: "ab €15", emoji: "🛡️", description: "Zum sicheren Ein- und Austragen der Pizza", amazonUrl: "https://www.amazon.de/dp/B07BHZI5VX?tag=pizzasoul-21" },
+  { name: "Pizzastein / Stahl", price: "ab €30", emoji: "🪨", description: "Für extra knusprigen Boden", amazonUrl: "https://www.amazon.de/dp/B08V1W2Z3J?tag=pizzasoul-21" },
+  { name: "Thermo-Infrarot", price: "ab €25", emoji: "🌡️", description: "Messung der Backofentemperatur", amazonUrl: "https://www.amazon.de/dp/B07Q4TKNLZ?tag=pizzasoul-21" },
+  { name: "Pellet-Sack (Ooni)", price: "€20", emoji: "🪵", description: "Premium Holzpellets für Ooni Öfen", amazonUrl: "https://www.amazon.de/dp/B08V3Y4XZH?tag=pizzasoul-21" },
+  { name: "Pizzaofen-Cover", price: "ab €25", emoji: "🧥", description: "Wetterschutz für draußen", amazonUrl: "https://www.amazon.de/dp/B08G9X1P8Z?tag=pizzasoul-21" },
+  { name: "Mehl Tipo 00", price: "ab €8", emoji: "🌾", description: "Das richtige Mehl für echte Pizza", amazonUrl: "https://www.amazon.de/dp/B07BHZI5VX?tag=pizzasoul-21" },
+];
+
+export default function AusruestungClient() {
+  return (
+    <main className="min-h-screen pt-24 pb-20">
+      {/* Hero */}
+      <section className="relative h-[50vh] flex items-end justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] via-[#2D1810] to-[#1A1A1A]" />
+        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "url('/images/workshop-pizzaiolo.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 text-center px-4 pb-12 max-w-4xl mx-auto">
+          <span className="inline-block px-4 py-2 rounded-full bg-[#E85D04]/20 text-[#E85D04] text-sm font-semibold border border-[#E85D04]/30 mb-6">🔥 Ausrüstung</span>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">Pizzaöfen <span className="text-gradient bg-gradient-to-r from-[#E85D04] to-[#DC2F02] bg-clip-text text-transparent">Empfehlungen</span></h1>
+          <p className="text-xl text-[#9CA3AF] max-w-2xl mx-auto">Die besten Pizzaöfen für zuhause – von tragbar bis stationär, von Budget bis Premium.</p>
+        </motion.div>
+      </section>
+
+      {/* Trust Badge */}
+      <section className="py-6 bg-[#2D2D2D] border-y border-white/5">
+        <div className="container-max px-4">
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-[#9CA3AF]">
+            <div className="flex items-center gap-2"><Check className="w-5 h-5 text-[#22C55E]" /><span>Ausrüstung selbst getestet</span></div>
+            <div className="flex items-center gap-2"><Check className="w-5 h-5 text-[#22C55E]" /><span>Affiliate Links (kein Aufpreis für dich)</span></div>
+            <div className="flex items-center gap-2"><Check className="w-5 h-5 text-[#22C55E]" /><span>Regelmäßig aktualisiert</span></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Oven Grid */}
+      <section className="section-padding">
+        <div className="container-max px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {ovens.map((oven, i) => (
+              <motion.article key={oven.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="relative bg-[#2D2D2D] rounded-2xl overflow-hidden border border-white/5 card-hover">
+                {oven.bestseller && <div className="absolute top-4 left-4 z-10 bg-[#E85D04] text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1"><Award className="w-3 h-3" /> Bestseller</div>}
+                <div className={`h-48 bg-gradient-to-br ${oven.gradient} flex items-center justify-center relative`}>
+                  <span className="text-8xl">{oven.emoji}</span>
+                  <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">{oven.category}</div>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex">{[...Array(5)].map((_, i) => <StarIcon key={i} className={`w-4 h-4 ${i < Math.floor(oven.rating) ? "text-[#F4A024] fill-[#F4A024]" : "text-[#3D3D3D]"}`} />)}</div>
+                    <span className="text-sm font-medium text-[#F4A024]">{oven.rating}</span>
+                    <span className="text-sm text-[#9CA3AF]">({oven.reviews.toLocaleString()} Bewertungen)</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">{oven.name}</h3>
+                  <p className="text-[#9CA3AF] text-sm mb-4">{oven.tagline}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">{oven.tags.map((tag) => <span key={tag} className="px-2 py-1 bg-[#3D3D3D] rounded-md text-xs text-[#9CA3AF]">{tag}</span>)}</div>
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div className="flex items-center gap-2"><Flame className="w-4 h-4 text-[#E85D04]" /><span>{oven.temperature}</span></div>
+                    <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#E85D04]" /><span>{oven.heatUp}</span></div>
+                  </div>
+                  <div className="space-y-1 mb-4">{oven.pros.slice(0, 3).map((pro) => <div key={pro} className="flex items-start gap-2 text-sm"><Check className="w-4 h-4 text-[#22C55E] mt-0.5 flex-shrink-0" /><span className="text-[#9CA3AF]">{pro}</span></div>)}</div>
+                  <div className="pt-4 border-t border-white/5">
+                    <div className="flex items-end justify-between mb-3">
+                      <div><span className="text-2xl font-bold">{oven.price}</span><span className="text-[#9CA3AF] text-sm line-through ml-2">{oven.oldPrice}</span></div>
+                      <span className="text-xs text-[#22C55E] font-medium">Provision: {oven.provision}</span>
+                    </div>
+                    <a href={oven.amazonUrl} target="_blank" rel="noopener noreferrer" className="w-full btn-primary flex items-center justify-center gap-2">{oven.prime && <span className="text-xs">PRIME</span>} Auf Amazon ansehen <ExternalLink className="w-4 h-4" /></a>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Accessories */}
+      <section className="section-padding bg-[#2D2D2D]">
+        <div className="container-max px-4">
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-3xl md:text-4xl font-bold text-center mb-4">Zubehör Highlights</motion.h2>
+          <p className="text-[#9CA3AF] text-center mb-12 max-w-2xl mx-auto">Das wichtigste Zubehör für deine Pizza-Reise.</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {accessories.map((acc, i) => (
+              <motion.a key={acc.name} href={acc.amazonUrl} target="_blank" rel="noopener noreferrer" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} whileHover={{ scale: 1.02 }} className="bg-[#1A1A1A] rounded-xl p-6 flex items-start gap-4 card-hover">
+                <span className="text-4xl">{acc.emoji}</span>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1"><h3 className="font-bold">{acc.name}</h3><span className="text-[#E85D04] font-medium text-sm">{acc.price}</span></div>
+                  <p className="text-sm text-[#9CA3AF]">{acc.description}</p>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section-padding bg-gradient-to-br from-[#E85D04] to-[#DC2F02]">
+        <div className="container-max px-4 text-center">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Bereit für deine erste Pizza?</h2>
+            <p className="text-white/80 mb-8 max-w-xl mx-auto">Mit dem richtigen Ofen und unseren Rezepten wirst du zum Pizza-Profi.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/rezepte" className="inline-flex items-center gap-2 bg-white text-[#E85D04] font-bold px-8 py-4 rounded-xl hover:bg-white/90 transition-colors text-lg"><ArrowRight className="w-5 h-5" /> Zu den Rezepten</Link>
+              <a href="https://www.amazon.de/s?k=pizzaofen&tag=pizzasoul-21" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/20 text-white font-bold px-8 py-4 rounded-xl hover:bg-white/30 transition-colors text-lg"><ExternalLink className="w-5 h-5" /> Alle Pizzaöfen auf Amazon</a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer Note */}
+      <section className="py-8 bg-[#2D2D2D] border-t border-white/5">
+        <div className="container-max px-4 text-center text-sm text-[#9CA3AF]">
+          <p><strong>Affiliate-Hinweis:</strong> Diese Seite enthält Links zu Amazon. Als Amazon-Partner verdienen wir an qualifizierten Verkäufen.</p>
+        </div>
+      </section>
+    </main>
+  );
+}

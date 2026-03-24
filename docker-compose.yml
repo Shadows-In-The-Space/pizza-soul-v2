@@ -1,0 +1,24 @@
+services:
+  pizzasoul-v2:
+    image: pizzasoul-v2:latest
+    container_name: pizzasoul-v2
+    restart: always
+    networks:
+      - agency-app_app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pizzasoul-v2.rule=Host(`pizzasoul.shadowsinthe.space`)"
+      - "traefik.http.routers.pizzasoul-v2.entrypoints=web,websecure"
+      - "traefik.http.routers.pizzasoul-v2.tls=true"
+      - "traefik.http.routers.pizzasoul-v2.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pizzasoul-v2.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.pizzasoul-v2-http.rule=Host(`pizzasoul.shadowsinthe.space`)"
+      - "traefik.http.routers.pizzasoul-v2-http.entrypoints=web"
+      - "traefik.http.routers.pizzasoul-v2-http.middlewares=redirect-to-https"
+    expose:
+      - "3000"
+
+networks:
+  agency-app_app-network:
+    external: true
