@@ -5,6 +5,7 @@ services:
     restart: always
     networks:
       - agency-app_app-network
+      - proxy_network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pizzasoul-v2.rule=Host(`pizzasoul.shadowsinthe.space`)"
@@ -21,4 +22,6 @@ services:
 
 networks:
   agency-app_app-network:
+    external: true
+  proxy_network:
     external: true
