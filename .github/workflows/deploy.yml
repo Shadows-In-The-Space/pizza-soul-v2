@@ -58,7 +58,8 @@ jobs:
             set -euo pipefail
             cd "$DEPLOY_TARGET"
             echo "=== Pre-build container state ==="
-            $COMPOSE ps
+            $COMPOSE ps || true
+            docker ps --filter name=pizzasoul-v2 --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}' || true
 
             # Build first, while the OLD container is still serving traffic.
             # If the build fails, the running container stays up — we never
@@ -69,11 +70,14 @@ jobs:
             docker build -t pizzasoul-v2:latest .
             echo "=== Image built. Now swapping container. ==="
 
-            # compose file uses a pre-built image (no `build:` directive),
-            # so 'docker compose up -d --force-recreate' is fragile when
-            # the image tag is identical to the running one — it fails with
-            # "container name already in use". Cleanest: down + up.
-            $COMPOSE down
+            # The running container 'pizzasoul-v2' was created by an older
+            # docker-compose invocation and is *not* part of the current
+            # compose project (it shows up in 'docker ps' but 'docker compose
+            # ps' returns 'no resource found to remove'). So compose down
+            # does nothing and compose up fails with name conflict.
+            # Fix: explicitly nuke the container by name, then let
+            # compose create a fresh one.
+            docker rm -f pizzasoul-v2 2>/dev/null || true
             $COMPOSE up -d
 
             # Give Next.js a few seconds to come up
