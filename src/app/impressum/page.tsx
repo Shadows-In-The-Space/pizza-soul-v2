@@ -13,9 +13,11 @@ export default function ImpressumPage() {
 
           <div className="bg-[#2D2D2D] rounded-xl p-6">
             <p className="text-white font-semibold">PizzaSoul</p>
-            <p>c/o Marc-Dennis Haberland</p>
-            <p>Adaptive AI Solutions</p>
-            <p>Ruhrgebiet</p>
+            <p>c/o Marc-Dennis Habeland</p>
+            <p>Adaptive-Ai-Solutions</p>
+            <p>c/o IP-Management #10391</p>
+            <p>Ludwig-Erhard-Straße 18</p>
+            <p>20459 Hamburg</p>
             <p>Deutschland</p>
           </div>
 
@@ -24,11 +26,20 @@ export default function ImpressumPage() {
             E-Mail: <a href="mailto:hallo@pizzasoul.de" className="text-[#E85D04] hover:underline">hallo@pizzasoul.de</a>
           </p>
 
+          <h2 className="text-2xl font-bold text-white mt-8">Umsatzsteuer-ID</h2>
+          <p>
+            USt-IdNr.: DE461893928
+            <br />
+            <span className="text-sm">(gemäß § 27 a Umsatzsteuergesetz)</span>
+          </p>
+
           <h2 className="text-2xl font-bold text-white mt-8">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
           <p>
-            Marc-Dennis Haberland<br />
-            Adaptive AI Solutions<br />
-            Ruhrgebiet, Deutschland
+            Marc-Dennis Habeland<br />
+            Adaptive-Ai-Solutions<br />
+            c/o IP-Management #10391<br />
+            Ludwig-Erhard-Straße 18<br />
+            20459 Hamburg
           </p>
 
           <h2 className="text-2xl font-bold text-white mt-8">Haftungsausschluss</h2>

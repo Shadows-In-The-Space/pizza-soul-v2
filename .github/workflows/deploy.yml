@@ -97,3 +97,13 @@ jobs:
           echo "=== content sanity ==="
           grep -ic "pizza" /tmp/root.html | xargs -I{} echo "pizza-mentions in HTML: {} (expect >=1)"
           grep -ic 'nextjs\|x-nextjs' /tmp/root.html | xargs -I{} echo "next-rendered markers (expect 0 since prerendered): {}"
+
+          # Legal pages MUST be reachable (TMG §5 / DSGVO).
+          IMP=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 15 "https://$DOMAIN/impressum")
+          DAT=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 15 "https://$DOMAIN/datenschutz")
+          echo "Health-Check /impressum: $IMP"
+          echo "Health-Check /datenschutz: $DAT"
+          if [ "$IMP" != "200" ] || [ "$DAT" != "200" ]; then
+            echo "Legal pages missing — DE compliance violation!"
+            exit 1
+          fi

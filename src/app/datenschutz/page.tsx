@@ -31,9 +31,12 @@ export default function DatenschutzPage() {
 
           <h3 className="text-xl font-semibold text-white">Verantwortliche</h3>
           <p>
-            Marc-Dennis Haberland<br />
-            Adaptive AI Solutions<br />
-            Ruhrgebiet, Deutschland<br />
+            Marc-Dennis Habeland<br />
+            Adaptive-Ai-Solutions<br />
+            c/o IP-Management #10391<br />
+            Ludwig-Erhard-Straße 18<br />
+            20459 Hamburg<br />
+            Deutschland<br />
             E-Mail: <a href="mailto:hallo@pizzasoul.de" className="text-[#E85D04] hover:underline">hallo@pizzasoul.de</a>
           </p>
 
