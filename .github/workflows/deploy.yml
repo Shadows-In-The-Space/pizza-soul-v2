@@ -1,0 +1,84 @@
+name: Deploy
+
+# Triggers: push to main, or manual dispatch from GitHub UI / `gh workflow run`.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Next.js Docker stack: rsync source to mothership, build the image
+# there (uses local Docker daemon — no registry, no DinD), restart the
+# container. Brief downtime during the image swap; Traefik keeps the
+# TLS termination alive either way.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15   # Next.js Docker build on the server takes a few minutes
+    environment: production
+
+    env:
+      DOMAIN: pizzasoul.shadowsinthe.space
+      DEPLOY_TARGET: /home/sonny/apps/pizza-soul-v2
+      DEPLOY_USER: sonny
+      HETZNER_HOST: 138.199.166.219
+      # docker compose v2 uses `docker compose` (space, not hyphen).
+      COMPOSE: docker compose
+      CF_PURGE: false   # turn on once Sonny provides CF API token + Zone ID
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1   # shallow is fine; no per-file <lastmod> logic here
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.HETZNER_DEPLOY_KEY }}
+
+      - name: Sync source to bind-mount target
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='*.md' \
+            --exclude='tsconfig.tsbuildinfo' \
+            --exclude='.gitignore' \
+            --exclude='.next-env.d.ts.bak' \
+            ./ \
+            "$DEPLOY_USER@$HETZNER_HOST:$DEPLOY_TARGET/"
+
+      - name: Build image + restart container on server
+        run: |
+          ssh "$DEPLOY_USER@$HETZNER_HOST" bash -s <<EOF
+            set -euo pipefail
+            cd "$DEPLOY_TARGET"
+            echo "=== Pre-build container state ==="
+            $COMPOSE ps
+            echo "=== Pulling base image (best-effort, ignore failures) ==="
+            docker pull node:20-alpine || echo "  (offline / image cached locally — continuing)"
+            echo "=== Building image (may take 2-5 min) ==="
+            $COMPOSE build --pull
+            echo "=== Recreating container ==="
+            $COMPOSE up -d --force-recreate --remove-orphans
+            # Give Next.js a few seconds to come up
+            sleep 8
+            echo "=== Post-deploy state ==="
+            $COMPOSE ps
+            docker logs --tail 30 pizzasoul-v2
+          EOF
+
+      - name: Health-check
+        run: |
+          # Wait for Next.js to finish booting (it's slower than static).
+          sleep 5
+          CB=$(date +%s)
+          echo "=== $DOMAIN / (no cache bust on root — Next.js routes cache) ==="
+          curl -fsSL --max-time 15 "https://$DOMAIN/" -o /tmp/root.html -w "HTTP %{http_code}  size=%{size_download}\n"
+          echo "=== content sanity ==="
+          grep -ic "pizza" /tmp/root.html | xargs -I{} echo "pizza-mentions in HTML: {} (expect >=1)"
+          grep -ic 'nextjs\|x-nextjs' /tmp/root.html | xargs -I{} echo "next-rendered markers (expect 0 since prerendered): {}"
