@@ -3,7 +3,7 @@ name: Deploy
 # Triggers: push to main, or manual dispatch from GitHub UI / `gh workflow run`.
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 # Next.js Docker stack: rsync source to mothership, build the image
