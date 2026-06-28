@@ -59,12 +59,23 @@ jobs:
             cd "$DEPLOY_TARGET"
             echo "=== Pre-build container state ==="
             $COMPOSE ps
+
+            # Build first, while the OLD container is still serving traffic.
+            # If the build fails, the running container stays up — we never
+            # touch it. Only swap once a fresh image is ready.
             echo "=== Pulling base image (best-effort, ignore failures) ==="
             docker pull node:20-alpine || echo "  (offline / image cached locally — continuing)"
-            echo "=== Building image (may take 2-5 min) ==="
-            $COMPOSE build --pull
-            echo "=== Recreating container ==="
-            $COMPOSE up -d --force-recreate --remove-orphans
+            echo "=== Building new image (may take 2-5 min) ==="
+            docker build -t pizzasoul-v2:latest .
+            echo "=== Image built. Now swapping container. ==="
+
+            # compose file uses a pre-built image (no `build:` directive),
+            # so 'docker compose up -d --force-recreate' is fragile when
+            # the image tag is identical to the running one — it fails with
+            # "container name already in use". Cleanest: down + up.
+            $COMPOSE down
+            $COMPOSE up -d
+
             # Give Next.js a few seconds to come up
             sleep 8
             echo "=== Post-deploy state ==="
